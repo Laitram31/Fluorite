@@ -13,7 +13,7 @@
 #define BOTTOMBAR_GAPS			0				/* gaps for the bottom bar */
 #define	DEFAULT_MASTER_OFFSET	0				/* master window size by default */
 #define METAKEY					Mod4Mask		/* key that will be used for bindings */
-#define FOLLOW_WINDOWS			False			/* do you want to change workspace when sending a window to another workspace */
+#define FOLLOW_WINDOWS			True	/* do you want to change workspace when sending a window to another workspace */
 #define MAX_WINDOWS				10				/* number of windows per workspaces */
 
 // Helpers for configuration (don't change values)
@@ -56,8 +56,8 @@ void fluorite_change_workspace(int new_workspace, int mode);
 // User functions (use it or create yours with these examples)
 static void fluorite_terminal() { char prog[255] = "st"; fluorite_execute(prog, GUI); }
 static void fluorite_filemanager() { char prog[255] = "thunar"; fluorite_execute(prog, GUI); }
-static void fluorite_dmenu() { char prog[255] = "rofi -show drun"; fluorite_execute(prog, GUI); }
-static void fluorite_webbrowser() { char prog[255] = "firefox"; fluorite_execute(prog, GUI); }
+// static void fluorite_dmenu() { char prog[255] = "rofi -show drun"; fluorite_execute(prog, GUI); }
+static void fluorite_webbrowser() { char prog[255] = "librewolf"; fluorite_execute(prog, GUI); }
 static void fluorite_exit() { fluorite_user_close(); }
 static void fluorite_next_focus() { fluorite_change_layout(FOCUS_TOP); }
 static void fluorite_prev_focus() { fluorite_change_layout(FOCUS_BOTTOM); }
@@ -71,10 +71,10 @@ static void fluorite_fullscreen_toggle() { fluorite_change_layout(FULLSCREEN_TOG
 static void fluorite_swap_focus() { fluorite_change_layout(SWAP_FOCUS); }
 static void fluorite_brightness_up() { char prog[255] = "brightnessctl set 50+"; fluorite_execute(prog, NOGUI); }
 static void fluorite_brightness_down() { char prog[255] = "brightnessctl set 50-"; fluorite_execute(prog, NOGUI); }
-static void fluorite_volume_up() { char prog[255] = "pactl set-sink-volume 0 +5%"; fluorite_execute(prog, NOGUI); }
-static void fluorite_volume_down() { char prog[255] = "pactl set-sink-volume 0 -5%"; fluorite_execute(prog, NOGUI); }
-static void fluorite_volume_mute() { char prog[255] = "pactl set-sink-mute 0 toggle"; fluorite_execute(prog, NOGUI); }
-static void fluorite_locking() { char prog[255] = "i3lock --color 1e1e1e; systemctl suspend"; fluorite_execute(prog, NOGUI); }
+static void fluorite_volume_up() { char prog[255] = "pamixer -i 5"; fluorite_execute(prog, NOGUI); }
+static void fluorite_volume_down() { char prog[255] = "pamixer -d 5"; fluorite_execute(prog, NOGUI); }
+static void fluorite_volume_mute() { char prog[255] = "pamixer -t"; fluorite_execute(prog, NOGUI); }
+static void fluorite_locking() { char prog[255] = "glitchlock"; fluorite_execute(prog, NOGUI); }
 
 // Workspaces switch function
 static void	fluorite_goto_workspace_one() { fluorite_change_workspace(0, 0); }
@@ -103,11 +103,11 @@ static void	fluorite_appto_workspace_ten() { fluorite_change_workspace(9, 1); }
 static const Bindings bind[] = {
 	{METAKEY,				XK_Return,					fluorite_terminal},
 	{METAKEY,				XK_a,						fluorite_filemanager},
-	{METAKEY,				XK_d,						fluorite_dmenu},
-	{METAKEY,				XK_j,						fluorite_smaller_master},
-	{METAKEY,				XK_k,						fluorite_next_focus},
-	{METAKEY,				XK_l,						fluorite_prev_focus},
-	{METAKEY,				XK_m,						fluorite_bigger_master},
+	/*{METAKEY,				XK_d,						fluorite_dmenu},*/
+	{METAKEY,				XK_h,						fluorite_smaller_master},
+	{METAKEY,				XK_j,						fluorite_next_focus},
+	{METAKEY,				XK_k,						fluorite_prev_focus},
+	{METAKEY,				XK_l,						fluorite_bigger_master},
 	{METAKEY,				XK_equal,					fluorite_base_master},
 	{METAKEY,				XK_w,						fluorite_webbrowser},
 	{METAKEY,				XK_s,						fluorite_stacking_toggle},
@@ -138,11 +138,11 @@ static const Bindings bind[] = {
 	{METAKEY|ShiftMask,				XK_ccedilla,  				fluorite_appto_workspace_nine},
 	{METAKEY|ShiftMask,				XK_agrave,  				fluorite_appto_workspace_ten},
 
-	{METAKEY|ShiftMask, 	XK_p,						fluorite_exit},
+	{METAKEY|ShiftMask, 	XK_e,						fluorite_exit},
 	{METAKEY|ShiftMask,		XK_q,						fluorite_close_window},
-	{METAKEY|ShiftMask,		XK_k,						fluorite_stack_rotate_up},
-	{METAKEY|ShiftMask,		XK_l,						fluorite_stack_rotate_down},
-	{METAKEY|ShiftMask,		XK_e,						fluorite_locking},
+	{METAKEY|ShiftMask,		XK_j,						fluorite_stack_rotate_up},
+	{METAKEY|ShiftMask,		XK_k,						fluorite_stack_rotate_down},
+	{METAKEY|ShiftMask,		XK_x,						fluorite_locking},
 
 	{0,				XF86XK_MonBrightnessUp,		fluorite_brightness_up},
 	{0,				XF86XK_MonBrightnessDown,	fluorite_brightness_down},

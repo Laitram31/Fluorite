@@ -80,6 +80,7 @@ typedef struct
 	int			screen_width;
 	int			screen_height;
 	int			running;
+	int			restart;
 	Workspaces	*workspaces;
 	int			current_workspace;
 	int			current_focus;
@@ -144,6 +145,31 @@ void fluorite_close_window()
 
 void fluorite_user_close()
 {
+	char *cmd;
+	size_t max = 66;
+
+	cmd = malloc(sizeof(*cmd) * max);
+	strcpy(cmd, "printf 'no\\nyes\\nrestart' | dmenu -i -p 'Exit Fluorite?'");
+	FILE *pp = popen(cmd, "r");
+	free(cmd);
+
+	if (pp != NULL) {
+		char buf[1024];
+		if (fgets(buf, sizeof(buf), pp) == NULL) {
+			fprintf(stderr, "Quitprompt: Error reading pipe!\n");
+			return;
+		}
+		if (strcmp(buf, "yes\n") == 0) {
+			pclose(pp);
+			fluorite.restart = 0;
+		} else if (strcmp(buf, "restart\n") == 0) {
+			pclose(pp);
+			fluorite.restart = 1;
+		} else if (strcmp(buf, "no\n") == 0) {
+			pclose(pp);
+			return;
+		}
+	}
 	fluorite.running = 0;
 	fluorite_clean();
 }
@@ -437,6 +463,7 @@ void fluorite_run()
 	XEvent ev;
 
 	fluorite.running = 1;
+	fluorite.restart = 0;
 	while (fluorite.running)
 	{
 		XNextEvent(fluorite.display, &ev);
@@ -488,6 +515,8 @@ void fluorite_clean()
 		free(fluorite.workspaces[fluorite.current_workspace].slaves_winframes);
 	}
 	XCloseDisplay(fluorite.display);
+	if (fluorite.restart == 1)
+	    execlp("Fluorite", "Fluorite", NULL);
 }
 
 // Core utilities
